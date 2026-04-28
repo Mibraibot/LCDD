@@ -1,0 +1,72 @@
+# Kode sebelumnya untuk scan wifi
+
+
+from flask import Flask, render_template, jsonify
+import json
+import os
+from datetime import datetime
+
+app = Flask(__name__)
+
+# Nama file JSON utama
+MAIN_JSON_FILE = "wifi_scans_history.json"
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/latest-scan')
+def get_latest_scan():
+    """API untuk mendapatkan scan terakhir"""
+    try:
+        with open(MAIN_JSON_FILE, 'r') as f:
+            data = json.load(f)
+        
+        if data['scans']:
+            latest = data['scans'][-1]
+            # Urutkan berdasarkan RSSI (terkuat ke terlemah)
+            latest['networks'].sort(key=lambda x: x['rssi'], reverse=True)
+            return jsonify(latest)
+        return jsonify({'error': 'No data'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/api/history/<ssid>')
+def get_ssid_history(ssid):
+    """API untuk mendapatkan history RSSI dari SSID tertentu"""
+    try:
+        with open(MAIN_JSON_FILE, 'r') as f:
+            data = json.load(f)
+        
+        history = []
+        for scan in data['scans']:
+            for network in scan['networks']:
+                if network['ssid'] == ssid:
+                    history.append({
+                        'time': scan['scan_time'],
+                        'rssi': network['rssi']
+                    })
+                    break
+        
+        return jsonify(history)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/api/all-ssids')
+def get_all_ssids():
+    """API untuk mendapatkan semua SSID unik"""
+    try:
+        with open(MAIN_JSON_FILE, 'r') as f:
+            data = json.load(f)
+        
+        ssids = set()
+        for scan in data['scans']:
+            for network in scan['networks']:
+                ssids.add(network['ssid'])
+        
+        return jsonify(sorted(list(ssids)))
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5001)

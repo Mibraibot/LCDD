@@ -1,413 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live WiFi Scanner Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-        .stat-card h3 {
-            color: #764ba2;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        .stat-card .value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #333;
-        }
-        .stat-card .unit {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .chart-container {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
-        .table-container {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px;
-            font-weight: 500;
-        }
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .signal-bar {
-            display: inline-block;
-            width: 50px;
-            height: 10px;
-            background: linear-gradient(90deg, #00ff00 0%, #ffff00 50%, #ff0000 100%);
-            border-radius: 5px;
-            position: relative;
-        }
-        .signal-strength {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 10px;
-            background: #ddd;
-            border-radius: 5px;
-        }
-        .refresh-info {
-            text-align: right;
-            color: white;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-        .ssid-selector {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #764ba2;
-            font-size: 16px;
-            width: 200px;
-        }
-        .good {
-            color: #00c853;
-            font-weight: bold;
-        }
-        .fair {
-            color: #ffd600;
-            font-weight: bold;
-        }
-        .poor {
-            color: #dd2c00;
-            font-weight: bold;
-        }
-    </style>
+
+<meta charset="UTF-8">
+<title>ESP32 2.4GHz Spectrum</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+.container{
+    width:95%;
+    margin:auto;
+}
+
+canvas{
+    background:#111827;
+    border-radius:10px;
+}
+
+h1{
+    margin-top:20px;
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="container">
-        <h1>📡 Live WiFi Scanner Dashboard</h1>
-        
-        <div class="refresh-info">
-            Auto-refresh setiap 5 detik | <span id="last-update">-</span>
-        </div>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <h3>Total Jaringan</h3>
-                <div class="value" id="total-networks">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>WiFi Terkuat</h3>
-                <div class="value" id="strongest-ssid">-</div>
-                <div class="unit" id="strongest-rssi"></div>
-            </div>
-            <div class="stat-card">
-                <h3>WiFi Terlemah</h3>
-                <div class="value" id="weakest-ssid">-</div>
-                <div class="unit" id="weakest-rssi"></div>
-            </div>
-        </div>
+<div class="container">
 
-        <div class="chart-container">
-            <canvas id="rssiChart"></canvas>
-        </div>
+<h1>ESP32 NRF24 Spectrum Analyzer</h1>
 
-        <div style="margin-bottom: 20px;">
-            <select id="ssidSelect" class="ssid-selector">
-                <option value="">Pilih SSID untuk history</option>
-            </select>
-        </div>
+<p>Realtime 2.4GHz RF Activity (125 Channels)</p>
 
-        <div class="chart-container">
-            <canvas id="historyChart"></canvas>
-        </div>
+<canvas id="chart"></canvas>
 
-        <div class="table-container">
-            <table id="wifi-table">
-                <thead>
-                    <tr>
-                        <th>SSID</th>
-                        <th>RSSI (dBm)</th>
-                        <th>Kualitas</th>
-                        <th>Channel</th>
-                        <th>BSSID</th>
-                        <th>Security</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <tr>
-                        <td colspan="6">Menunggu data...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+</div>
 
-    <script>
-        let rssiChart, historyChart;
-        let currentSSID = '';
+<script>
 
-        function initCharts() {
-            const ctx1 = document.getElementById('rssiChart').getContext('2d');
-            rssiChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'RSSI (dBm)',
-                        data: [],
-                        backgroundColor: 'rgba(102, 126, 234, 0.6)',
-                        borderColor: 'rgba(102, 126, 234, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'RSSI (dBm)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Kekuatan Sinyal WiFi Saat Ini'
-                        }
-                    }
+const ctx = document.getElementById('chart');
+
+let chart = new Chart(ctx,{
+
+    type:'bar',
+
+    data:{
+        labels:Array.from({length:125},(_,i)=>i),
+
+        datasets:[{
+            label:"RF Activity",
+            data:new Array(125).fill(0),
+            borderWidth:1
+        }]
+    },
+
+    options:{
+        animation:false,
+        responsive:true,
+        scales:{
+            y:{
+                beginAtZero:true
+            },
+            x:{
+                ticks:{
+                    maxTicksLimit:25
                 }
-            });
-
-            const ctx2 = document.getElementById('historyChart').getContext('2d');
-            historyChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'RSSI History',
-                        data: [],
-                        borderColor: '#764ba2',
-                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'RSSI (dBm)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'History Kekuatan Sinyal'
-                        }
-                    }
-                }
-            });
-        }
-
-        function getSignalQuality(rssi) {
-            if (rssi >= -50) return { class: 'good', text: 'Excellent' };
-            if (rssi >= -60) return { class: 'good', text: 'Good' };
-            if (rssi >= -70) return { class: 'fair', text: 'Fair' };
-            return { class: 'poor', text: 'Poor' };
-        }
-
-        async function fetchData() {
-            try {
-                const response = await fetch('/api/latest-scan');
-                const data = await response.json();
-                
-                if (data.error) {
-                    console.error('Error:', data.error);
-                    return;
-                }
-
-                updateStats(data);
-                updateTable(data.networks);
-                updateChart(data.networks);
-                updateLastUpdate();
-                
-                // Update SSID list jika perlu
-                if (!currentSSID) {
-                    await fetchSSIDs();
-                }
-                
-                // Update history jika ada SSID terpilih
-                if (currentSSID) {
-                    fetchHistory(currentSSID);
-                }
-                
-            } catch (error) {
-                console.error('Fetch error:', error);
             }
         }
+    }
 
-        function updateStats(data) {
-            document.getElementById('total-networks').textContent = data.total_networks;
-            
-            if (data.networks && data.networks.length > 0) {
-                const strongest = data.networks[0];
-                const weakest = data.networks[data.networks.length - 1];
-                
-                document.getElementById('strongest-ssid').textContent = strongest.ssid || '(hidden)';
-                document.getElementById('strongest-rssi').textContent = `${strongest.rssi} dBm`;
-                
-                document.getElementById('weakest-ssid').textContent = weakest.ssid || '(hidden)';
-                document.getElementById('weakest-rssi').textContent = `${weakest.rssi} dBm`;
-            }
+});
+
+async function updateSpectrum(){
+
+    try{
+
+        const response = await fetch("/spectrum");
+        const data = await response.json();
+
+        if(data.channels){
+
+            chart.data.datasets[0].data = data.channels;
+            chart.update();
+
         }
 
-        function updateTable(networks) {
-            const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
-            
-            if (!networks || networks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">Tidak ada data</td></tr>';
-                return;
-            }
+    }catch(e){
+        console.log(e)
+    }
 
-            networks.forEach(net => {
-                const quality = getSignalQuality(net.rssi);
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td style="font-weight: bold;">${net.ssid || '<i>Hidden</i>'}</td>
-                    <td>${net.rssi}</td>
-                    <td class="${quality.class}">${quality.text}</td>
-                    <td>${net.channel}</td>
-                    <td style="font-family: monospace;">${net.bssid}</td>
-                    <td>${net.security}</td>
-                `;
-            });
-        }
+}
 
-        function updateChart(networks) {
-            const ssids = networks.map(n => n.ssid.length > 15 ? n.ssid.substring(0, 12) + '...' : n.ssid);
-            const rssis = networks.map(n => n.rssi);
-            
-            rssiChart.data.labels = ssids;
-            rssiChart.data.datasets[0].data = rssis;
-            rssiChart.update();
-        }
+setInterval(updateSpectrum,200);
 
-        async function fetchSSIDs() {
-            try {
-                const response = await fetch('/api/all-ssids');
-                const ssids = await response.json();
-                
-                const select = document.getElementById('ssidSelect');
-                select.innerHTML = '<option value="">Pilih SSID untuk history</option>';
-                
-                ssids.forEach(ssid => {
-                    const option = document.createElement('option');
-                    option.value = ssid;
-                    option.textContent = ssid;
-                    select.appendChild(option);
-                });
-                
-                select.addEventListener('change', (e) => {
-                    currentSSID = e.target.value;
-                    if (currentSSID) {
-                        fetchHistory(currentSSID);
-                    }
-                });
-                
-            } catch (error) {
-                console.error('Error fetching SSIDs:', error);
-            }
-        }
+</script>
 
-        async function fetchHistory(ssid) {
-            try {
-                const response = await fetch(`/api/history/${encodeURIComponent(ssid)}`);
-                const history = await response.json();
-                
-                if (Array.isArray(history)) {
-                    const times = history.map(h => new Date(h.time).toLocaleTimeString());
-                    const rssis = history.map(h => h.rssi);
-                    
-                    historyChart.data.labels = times;
-                    historyChart.data.datasets[0].label = `RSSI History - ${ssid}`;
-                    historyChart.data.datasets[0].data = rssis;
-                    historyChart.update();
-                }
-                
-            } catch (error) {
-                console.error('Error fetching history:', error);
-            }
-        }
-
-        function updateLastUpdate() {
-            const now = new Date();
-            document.getElementById('last-update').textContent = 
-                `Update terakhir: ${now.toLocaleTimeString()}`;
-        }
-
-        // Initialize
-        initCharts();
-        
-        // Fetch data immediately and then every 5 seconds
-        fetchData();
-        setInterval(fetchData, 5000);
-    </script>
 </body>
+
 </html>

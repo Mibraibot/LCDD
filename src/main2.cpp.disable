@@ -1,0 +1,257 @@
+// Kode yg udah berhasil kemungkinan
+
+
+
+
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+
+// Definisi pin sesuai dengan yang Anda berikan
+#define CE_PIN   16 
+#define CSN_PIN  15  
+
+// Untuk ESP32, pin SPI sudah default:
+// MOSI: 23, MISO: 19, SCK: 18
+// TAPI karena Anda ingin pin khusus, kita akan setting manual
+
+// Inisialisasi objek RF24 dengan pin CE dan CSN
+RF24 radio(CE_PIN, CSN_PIN);
+
+const int totalChannels = 125; // Kanal 0-124 untuk 2400-2525 MHz
+int channelData[totalChannels];
+unsigned long lastTime = 0;
+const int scanDelay = 3; // Jeda per kanal dalam milidetik
+
+// Variabel untuk menyimpan pola sinyal
+int channelCounter[totalChannels];
+int scanCycle = 0;
+
+// Deklarasi fungsi di awal agar tidak error "not declared in scope"
+void findTopChannels();
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial) {
+    ; // Tunggu serial port siap
+  }
+  
+  Serial.println(F("Memulai RF24 Scanner..."));
+  Serial.println(F("Konfigurasi Pin:"));
+  Serial.print(F("CE: ")); Serial.println(CE_PIN);
+  Serial.print(F("CSN: ")); Serial.println(CSN_PIN);
+  Serial.print(F("MOSI: ")); Serial.println(13); // MOSI pin yang Anda inginkan
+  Serial.print(F("MISO: ")); Serial.println(12); // MISO pin yang Anda inginkan
+  Serial.print(F("SCK: ")); Serial.println(14);  // SCK pin yang Anda inginkan
+  
+  // Inisialisasi SPI dengan pin yang ditentukan
+  // ESP32: VSPI default di 18,19,23 tapi kita bisa set custom pins
+  SPI.begin(14, 12, 13, -1); // SCK, MISO, MOSI, SS (CSN tidak perlu di sini)
+  
+  // Inisialisasi radio
+  if (!radio.begin()) {
+    Serial.println(F("Modul NRF24L01 tidak terdeteksi!"));
+    Serial.println(F("Periksa koneksi pin:"));
+    Serial.println(F(" - VCC ke 3.3V (pakai kapasitor 10-100uF)"));
+    Serial.println(F(" - GND ke GND"));
+    Serial.println(F(" - CE ke GPIO 16"));
+    Serial.println(F(" - CSN ke GPIO 15"));
+    Serial.println(F(" - MOSI ke GPIO 13"));
+    Serial.println(F(" - MISO ke GPIO 12"));
+    Serial.println(F(" - SCK ke GPIO 14"));
+    while (1) {
+      delay(1000);
+    }
+  }
+  
+  Serial.println(F("NRF24L01 terdeteksi!"));
+  
+  // Konfigurasi radio untuk mode pemindaian
+  radio.setAutoAck(false);              // Nonaktifkan auto-ack
+  radio.setPALevel(RF24_PA_MAX);        // Daya maksimum untuk sensitivitas terbaik
+  radio.setDataRate(RF24_1MBPS);        // Data rate 1Mbps
+  radio.setCRCLength(RF24_CRC_DISABLED); // Nonaktifkan CRC
+  radio.stopListening();                 // Hentikan listening
+  delay(100);
+  radio.startListening();                // Mulai listening
+  
+  // Reset semua data
+  for (int i = 0; i < totalChannels; i++) {
+    channelData[i] = 0;
+    channelCounter[i] = 0;
+  }
+  
+  Serial.println(F("========================================"));
+  Serial.println(F("Mulai memindai kanal 2.4 GHz..."));
+  Serial.println(F("Format: [Kanal] (Frekuensi) -> Nilai Aktivitas"));
+  Serial.println(F("Nyalakan drone Anda sekarang!"));
+  Serial.println(F("========================================"));
+}
+
+void loop() {
+  // Pindai semua kanal
+  for (int channel = 0; channel < totalChannels; channel++) {
+    radio.setChannel(channel);           // Set kanal
+    delayMicroseconds(300);               // Tunggu stabil
+    
+    // Gunakan testRPD() sebagai pengganti read_register
+    // testRPD() akan mengembalikan true jika ada sinyal > -64 dBm
+    if (radio.testRPD()) {
+      // Ada sinyal terdeteksi
+      channelData[channel] = min(255, channelData[channel] + 15);
+      channelCounter[channel]++;
+    } else {
+      // Tidak ada sinyal
+      if (channelData[channel] > 0) {
+        channelData[channel] -= 1;        // Decay perlahan
+      }
+    }
+    
+    delayMicroseconds(scanDelay * 100);   // Jeda antar kanal
+  }
+  
+  scanCycle++;
+  
+  // Cetak hasil setiap 500ms
+  if (millis() - lastTime > 500) {
+    lastTime = millis();
+    
+    Serial.println(F("\n========== Hasil Scan =========="));
+    
+    // Tampilkan 10 kanal dengan aktivitas tertinggi
+    findTopChannels();
+    
+    Serial.println(F("\nDetail semua kanal aktif:"));
+    int activeCount = 0;
+    
+    for (int ch = 0; ch < totalChannels; ch++) {
+      if (channelData[ch] > 20) { // Hanya tampilkan yang signifikan
+        activeCount++;
+        int freq = 2400 + ch; // Frekuensi dalam MHz
+        
+        // Tampilkan bar chart sederhana
+        Serial.print(F("Kanal "));
+        Serial.print(ch);
+        Serial.print(F(" ("));
+        Serial.print(freq);
+        Serial.print(F(" MHz): "));
+        
+        // Visualisasi dengan karakter
+        int bars = map(channelData[ch], 0, 255, 0, 50);
+        for (int i = 0; i < bars; i++) {
+          Serial.print(F("#"));
+        }
+        Serial.print(F(" "));
+        Serial.print(channelData[ch]);
+        Serial.print(F(" ("));
+        Serial.print(channelCounter[ch]);
+        Serial.println(F("x)"));
+      }
+    }
+    
+    if (activeCount == 0) {
+      Serial.println(F("Tidak ada sinyal terdeteksi..."));
+    }
+    
+    Serial.print(F("Siklus scan: "));
+    Serial.println(scanCycle);
+    Serial.print(F("RSSI threshold: -64 dBm"));
+    Serial.println();
+    
+    // Reset counter sesekali untuk melihat pola baru
+    if (scanCycle % 20 == 0) {
+      for (int i = 0; i < totalChannels; i++) {
+        channelCounter[i] = channelCounter[i] / 2; // Half-life untuk counter
+      }
+    }
+  }
+}
+
+void findTopChannels() {
+  // Salin data untuk diurutkan
+  int indices[totalChannels];
+  int values[totalChannels];
+  
+  for (int i = 0; i < totalChannels; i++) {
+    indices[i] = i;
+    values[i] = channelData[i];
+  }
+  
+  // Sorting sederhana (bubble sort)
+  for (int i = 0; i < totalChannels - 1; i++) {
+    for (int j = 0; j < totalChannels - i - 1; j++) {
+      if (values[j] < values[j + 1]) {
+        // Tukar values
+        int tempVal = values[j];
+        values[j] = values[j + 1];
+        values[j + 1] = tempVal;
+        
+        // Tukar indices
+        int tempIdx = indices[j];
+        indices[j] = indices[j + 1];
+        indices[j + 1] = tempIdx;
+      }
+    }
+  }
+  
+  // Tampilkan top 5
+  Serial.println(F("\nTop 5 Kanal Tersibuk:"));
+  int topCount = 0;
+  for (int i = 0; i < 5; i++) {
+    if (values[i] > 0) {
+      topCount++;
+      int freq = 2400 + indices[i];
+      Serial.print(F("  #"));
+      Serial.print(i + 1);
+      Serial.print(F(": Kanal "));
+      Serial.print(indices[i]);
+      Serial.print(F(" ("));
+      Serial.print(freq);
+      Serial.print(F(" MHz) - Nilai: "));
+      Serial.println(values[i]);
+    }
+  }
+  
+  if (topCount == 0) {
+    Serial.println(F("  Belum ada sinyal terdeteksi"));
+  }
+}
+
+// Fungsi alternatif untuk membaca RPD (jika ingin menggunakan cara manual)
+bool checkRPDManually() {
+  // Cara manual: testRPD() adalah fungsi yang benar untuk library RF24
+  return radio.testRPD();
+}
+
+// Fungsi untuk mengatur channel secara manual (untuk debugging)
+void setChannelManually(int channel) {
+  radio.setChannel(channel);
+  delay(10);
+  Serial.print(F("Channel set ke: "));
+  Serial.print(channel);
+  Serial.print(F(" ("));
+  Serial.print(2400 + channel);
+  Serial.println(F(" MHz)"));
+}
+
+// Fungsi untuk mengukur noise floor di satu channel
+void measureChannel(int channel) {
+  radio.setChannel(channel);
+  delay(10);
+  
+  long total = 0;
+  int samples = 100;
+  
+  for (int i = 0; i < samples; i++) {
+    if (radio.testRPD()) {
+      total++;
+    }
+    delayMicroseconds(100);
+  }
+  
+  Serial.print(F("Channel "));
+  Serial.print(channel);
+  Serial.print(F(": "));
+  Serial.print(total * 100 / samples);
+  Serial.println(F("% aktivitas"));
+}

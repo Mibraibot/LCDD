@@ -133,4 +133,8 @@
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/esp_hw_support/include/soc/esp32/spiram.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- src/wifi_scanner.h
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
+ .pio/libdeps/esp32dev/RF24/nRF24L01.h .pio/libdeps/esp32dev/RF24/RF24.h \
+ .pio/libdeps/esp32dev/RF24/RF24_config.h \
+ .pio/libdeps/esp32dev/RF24/nRF24L01.h

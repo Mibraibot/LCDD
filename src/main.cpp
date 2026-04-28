@@ -1,58 +1,103 @@
 #include <Arduino.h>
-#include "wifi_scanner.h" // Sertakan file header kita
-#include <vector>
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
 
-unsigned long lastScanTime = 0;
-const unsigned long scanInterval = 15000; // 15 detik
+// ================= PIN SESUAI HARDWARE =================
+#define NRF_CE  27
+#define NRF_CSN 4   
+#define SCK_PIN  18
+#define MISO_PIN 19
+#define MOSI_PIN 23
+
+RF24 radio(NRF_CE, NRF_CSN);
+const char hex_chars[] = "0123456789ABCDEF";
+
+// Variabel untuk menyimpan waktu awal (saat upload/compile)
+int startHr, startMin, startSec;
+
+// ================= FUNGSI PARSING WAKTU LAPTOP =================
+void setInitialTime() {
+  // Makro __TIME__ mengambil jam laptop format "HH:MM:SS" saat dicompile
+  sscanf(__TIME__, "%d:%d:%d", &startHr, &startMin, &startSec);
+}
+
+// ================= FUNGSI WAKTU WIB (OFF-LINE) =================
+String getWIBTimestamp() {
+  unsigned long totalSeconds = (millis() / 1000) + (startHr * 3600) + (startMin * 60) + startSec;
+  
+  int seconds = totalSeconds % 60;
+  int minutes = (totalSeconds / 60) % 60;
+  int hours = (totalSeconds / 3600) % 24;
+  
+  char buf[20];
+  sprintf(buf, "%02d:%02d:%02d", hours, minutes, seconds);
+  return String(buf);
+}
+
+// ================= LOW LEVEL READ REGISTER =================
+uint8_t readRegister(uint8_t reg) {
+  uint8_t result;
+  digitalWrite(NRF_CSN, LOW);
+  SPI.transfer(reg & 0x1F); 
+  result = SPI.transfer(0xFF);
+  digitalWrite(NRF_CSN, HIGH);
+  return result;
+}
 
 void setup() {
   Serial.begin(115200);
-  delay(1000); // Beri waktu untuk inisialisasi Serial
+  
+  // Ambil waktu dari laptop saat compile
+  setInitialTime();
+  
+  SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN);
+  pinMode(NRF_CSN, OUTPUT);
+  digitalWrite(NRF_CSN, HIGH);
 
-  Serial.println("\n=====================================");
-  Serial.println("  ESP32 WiFi Analyzer Project");
-  Serial.println("  Data akan dikirim dalam format JSON");
-  Serial.println("=====================================\n");
+  if (!radio.begin()) {
+    Serial.println("{\"status\":\"error\", \"message\":\"NRF24L01 Not Found\"}");
+    while (1);
+  }
+
+  radio.setAutoAck(false);
+  radio.disableCRC();
+  radio.setPALevel(RF24_PA_MAX); 
+  radio.setDataRate(RF24_2MBPS); 
+  radio.stopListening();
+
+  Serial.println("{\"status\":\"success\", \"message\":\"Scanner Started\"}");
 }
 
 void loop() {
-  // Scan setiap interval
-  if (millis() - lastScanTime >= scanInterval) {
-    
-    // Lakukan scan WiFi
-    int networkCount = startWiFiScan();
-
-    if (networkCount > 0) {
-      // Ambil hasil scan
-      std::vector<WiFiNetworkInfo> networks = getScanResults();
-
-      // Tampilkan di Serial Monitor (format human readable)
-      Serial.println("\n--- Daftar Jaringan WiFi Ditemukan ---");
-      for (const auto& net : networks) {
-        Serial.print("SSID: ");
-        Serial.print(net.ssid);
-        Serial.print(" | RSSI: ");
-        Serial.print(net.rssi);
-        Serial.print(" dBm");
-        Serial.print(" | BSSID: ");
-        Serial.print(net.bssid);
-        Serial.print(" | Channel: ");
-        Serial.print(net.channel);
-        Serial.print(" | Security: ");
-        Serial.println(net.security);
+  String spectrumData = "";
+  
+  // Loop scan 125 channel
+  for (int ch = 0; ch < 125; ch++) {
+    int hits = 0;
+    for (int s = 0; s < 10; s++) {
+      radio.setChannel(ch);
+      radio.startListening();
+      delayMicroseconds(500); 
+      if (readRegister(0x09) & 1) {
+        hits++;
       }
-      Serial.println("--------------------------------------\n");
-      
-      // KIRIM DATA DALAM FORMAT JSON VIA SERIAL
-      Serial.println("Mengirim data JSON...");
-      kirimJSONkeSerial();
-      Serial.println(); // Spasi biar rapi
-      
-    } else {
-      Serial.println("Tidak ada jaringan WiFi yang ditemukan di sekitar.");
+      radio.stopListening();
     }
-    
-    lastScanTime = millis();
-    Serial.println("Menunggu 15 detik sebelum scan berikutnya...");
+    if (hits > 15) hits = 15;
+    spectrumData += hex_chars[hits];
   }
+
+  // ================= JSON FORMAT PROFESIONAL =================
+  Serial.println("{");
+  Serial.println("  \"node\": \"Node 1\",");
+  Serial.print("  \"timestamp_wib\": \""); 
+  Serial.print(getWIBTimestamp()); 
+  Serial.println("\",");
+  Serial.print("  \"data_hex\": \""); 
+  Serial.print(spectrumData); 
+  Serial.println("\"");
+  Serial.println("}");
+
+  delay(500); 
 }
