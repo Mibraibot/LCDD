@@ -1,0 +1,341 @@
+#include <SPI.h>
+#include <RF24.h>
+#include <nRF24L01.h>
+
+
+#define CE_PIN   16 
+#define CSN_PIN  15  
+#define MOSI_PIN 13 
+#define MISO_PIN 12 
+#define SCK_PIN  14  
+
+RF24 radio(CE_PIN, CSN_PIN);
+
+#define CHANNELS  64
+int channel[CHANNELS];
+int line;
+char grey[] = " .:-=+*aRW";
+
+
+#define _NRF24_CONFIG      0x00
+#define _NRF24_EN_AA       0x01
+#define _NRF24_RF_CH       0x05
+#define _NRF24_RF_SETUP    0x06
+#define _NRF24_RPD         0x09
+
+int currentChannel = 0;  // 
+bool jammingMode = false;
+String inputBuffer = "";
+
+
+byte readRegister(byte reg) {
+    byte result;
+    
+    
+    digitalWrite(CSN_PIN, LOW);
+    
+   
+    SPI.transfer(reg & 0x1F);
+    result = SPI.transfer(0xFF); 
+    
+    
+    digitalWrite(CSN_PIN, HIGH);
+    
+    return result;
+}
+
+
+void writeRegister(byte reg, byte value) {
+    
+    digitalWrite(CSN_PIN, LOW);
+    
+   
+    SPI.transfer((reg & 0x1F) | 0x20);
+    SPI.transfer(value);
+    
+    // Pull CS high to end transaction
+    digitalWrite(CSN_PIN, HIGH);
+}
+
+void powerUp(void)
+{
+    byte config = readRegister(_NRF24_CONFIG);
+    writeRegister(_NRF24_CONFIG, config | 0x02);
+    delayMicroseconds(130);
+}
+
+void powerDown(void)
+{
+    byte config = readRegister(_NRF24_CONFIG);
+    writeRegister(_NRF24_CONFIG, config & ~0x02);
+}
+
+void setRX(void)
+{
+    byte config = readRegister(_NRF24_CONFIG);
+    writeRegister(_NRF24_CONFIG, config | 0x01);
+    radio.startListening();  // Enable RX mode
+    delayMicroseconds(100);
+}
+
+void scanChannels(void)
+{
+    radio.stopListening();  // Disable RX
+    
+    for (int j = 0; j < 100; j++)  // Reduced from 255 for faster scanning
+    {
+        for (int i = 0; i < CHANNELS; i++)
+        {
+            // Set channel frequency
+            writeRegister(_NRF24_RF_CH, i);
+            
+            // Enable RX
+            setRX();
+            delayMicroseconds(60);
+            radio.stopListening();
+            
+            // Check RPD (Received Power Detector) register
+            if (readRegister(_NRF24_RPD) > 0) {
+                channel[i]++;
+            }
+        }
+    }
+}
+
+void outputChannels(void)
+{
+    int norm = 0;
+    
+    // Find maximum value for normalization
+    for (int i = 0; i < CHANNELS; i++) {
+        if (channel[i] > norm) norm = channel[i];
+    }
+    
+    // Print channel activity graph
+    Serial.print('|');
+    for (int i = 0; i < CHANNELS; i++)
+    {
+        int pos;
+        
+        if (norm != 0) pos = (channel[i] * 10) / norm;
+        else pos = 0;
+        
+        if (pos == 0 && channel[i] > 0) pos++;
+        if (pos > 9) pos = 9;
+        
+        Serial.print(grey[pos]);
+        channel[i] = 0;  // Reset for next scan
+    }
+    
+    Serial.print("| ");
+    Serial.println(norm);
+}
+
+void printChannels(void)
+{
+    Serial.println(">      1 2  3 4  5  6 7 8  9 10 11 12 13  14                     <");
+}
+
+void jammer() {
+    const char text[] = "xxxxxxxxxxxxxxxx";
+    // Calculate channel range based on selected channel
+    int startChannel = (currentChannel * 5) + 1;
+    int endChannel = startChannel + 22;  // 23 channels total
+    
+    // Stop listening before transmitting
+    radio.stopListening();
+    
+    for (int i = startChannel; i < endChannel; i++) {
+        radio.setChannel(i);
+        radio.write(&text, sizeof(text));
+        delayMicroseconds(100);  // Small delay between transmissions
+    }
+}
+
+void processSerialCommand(String cmd) {
+    cmd.trim();
+    
+    if (cmd == "HELP" || cmd == "help") {
+        Serial.println("\n=== Available Commands ===");
+        Serial.println("JAM ON   - Enable jamming mode");
+        Serial.println("JAM OFF  - Disable jamming mode");
+        Serial.println("CHAN <1-14> - Set channel number");
+        Serial.println("STATUS   - Show current status");
+        Serial.println("SCAN     - Run channel scan");
+        Serial.println("HELP     - Show this help");
+        Serial.println("==========================\n");
+    }
+    else if (cmd == "JAM ON" || cmd == "jam on") {
+        jammingMode = true;
+        Serial.println("Jamming mode: ENABLED");
+        radio.setPALevel(RF24_PA_HIGH);
+        radio.setDataRate(RF24_2MBPS);
+        radio.stopListening();  
+    }
+    else if (cmd == "JAM OFF" || cmd == "jam off") {
+        jammingMode = false;
+        Serial.println("Jamming mode: DISABLED");
+    }
+    else if (cmd.startsWith("CHAN ") || cmd.startsWith("chan ")) {
+        int spaceIndex = cmd.indexOf(' ');
+        if (spaceIndex > 0) {
+            String numStr = cmd.substring(spaceIndex + 1);
+            int newChannel = numStr.toInt();
+            
+            if (newChannel >= 1 && newChannel <= 14) {
+                currentChannel = newChannel - 1;  
+                Serial.print("Channel set to: ");
+                Serial.println(newChannel);
+            } else {
+                Serial.println("Error: Channel must be between 1 and 14");
+            }
+        }
+    }
+    else if (cmd == "STATUS" || cmd == "status") {
+        Serial.println("\n=== Current Status ===");
+        Serial.print("Selected Channel: ");
+        Serial.println(currentChannel + 1);
+        Serial.print("Jamming Mode: ");
+        Serial.println(jammingMode ? "ON" : "OFF");
+        Serial.print("NRF24L01 Status: ");
+        Serial.println(radio.isChipConnected() ? "Connected" : "Not Connected");
+        
+        // Read some registers to show status
+        byte config = readRegister(_NRF24_CONFIG);
+        byte rfSetup = readRegister(_NRF24_RF_SETUP);
+        
+        Serial.print("Config Register: 0x");
+        Serial.println(config, HEX);
+        Serial.print("RF Setup Register: 0x");
+        Serial.println(rfSetup, HEX);
+        Serial.println("======================\n");
+    }
+    else if (cmd == "SCAN" || cmd == "scan") {
+        Serial.println("Starting channel scan...");
+        // Temporarily disable jamming if active
+        bool wasJamming = jammingMode;
+        jammingMode = false;
+        
+        radio.stopListening();
+        scanChannels();
+        outputChannels();
+        
+        // Restore jamming mode
+        jammingMode = wasJamming;
+    }
+    else {
+        Serial.println("Unknown command. Type HELP for available commands.");
+    }
+}
+
+void setup()
+{
+    Serial.begin(115200);  // Baud rate 115200
+    while (!Serial) {
+        ; // Wait for serial port to connect
+    }
+    
+    Serial.println("\n==================================");
+    Serial.println("ESP32 NRF24L01 Control");
+    Serial.println("==================================");
+    Serial.println("Pin Configuration:");
+    Serial.println("CE   -> GPIO22");
+    Serial.println("CSN  -> GPIO21");
+    Serial.println("MOSI -> GPIO23");
+    Serial.println("MISO -> GPIO19");
+    Serial.println("SCK  -> GPIO18");
+    Serial.println("==================================\n");
+    
+    // Initialize SPI pins dengan konfigurasi yang Anda gunakan
+    SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, CSN_PIN);
+    
+    // Configure SPI
+    SPI.setDataMode(SPI_MODE0);
+    SPI.setFrequency(10000000);  // 10MHz
+    SPI.setBitOrder(MSBFIRST);
+    
+    // Set CSN and CE pins as outputs
+    pinMode(CSN_PIN, OUTPUT);
+    pinMode(CE_PIN, OUTPUT);
+    digitalWrite(CSN_PIN, HIGH);  // Deselect by default
+    digitalWrite(CE_PIN, LOW);
+    
+    // Initialize radio
+    if (!radio.begin()) {
+        Serial.println("NRF24L01 not detected! Check wiring.");
+        Serial.println("\nTroubleshooting tips:");
+        Serial.println("1. Periksa kembali koneksi pin:");
+        Serial.println("   CE    -> GPIO22");
+        Serial.println("   CSN   -> GPIO21");
+        Serial.println("   MOSI  -> GPIO23");
+        Serial.println("   MISO  -> GPIO19");
+        Serial.println("   SCK   -> GPIO18");
+        Serial.println("2. Pastikan NRF24L01 mendapat power 3.3V");
+        Serial.println("3. Cek kapasitor 10uF - 100uF di dekat modul NRF24L01");
+        Serial.println("4. Coba reset ESP32\n");
+        
+        while (1) {
+            delay(1000);
+            Serial.print(".");
+        }
+    }
+    
+    Serial.println("NRF24L01 detected successfully!");
+    
+    // Configure NRF24L01
+    radio.stopListening();
+    
+    // Initialize registers manually
+    writeRegister(_NRF24_EN_AA, 0x00);  // Disable auto-ack
+    writeRegister(_NRF24_RF_SETUP, 0x0F);  // Max power, 2Mbps
+    powerUp();
+    
+    Serial.println("\nSystem ready. Type HELP for commands.\n");
+    printChannels();
+}
+
+void loop()
+{
+    // Check for serial input
+    while (Serial.available() > 0) {
+        char c = Serial.read();
+        
+        if (c == '\n') {
+            if (inputBuffer.length() > 0) {
+                processSerialCommand(inputBuffer);
+                inputBuffer = "";
+            }
+        } else if (c != '\r') {
+            inputBuffer += c;
+        }
+    }
+    
+    // Main operation mode
+    if (jammingMode) {
+        // Jamming mode - continuously transmit
+        jammer();
+        
+        // Print status every 1000 cycles
+        static int jamCounter = 0;
+        if (++jamCounter >= 1000) {
+            Serial.print("Jamming on channel ");
+            Serial.print(currentChannel + 1);
+            Serial.print(" (");
+            Serial.print(2400 + (currentChannel * 5));
+            Serial.println(" MHz)");
+            jamCounter = 0;
+        }
+    } else {
+        // Scan mode - scan channels
+        radio.stopListening();
+        scanChannels();
+        outputChannels();
+        
+        if (line++ > 12) {
+            printChannels();
+            line = 0;
+        }
+        
+        delay(100);  // Small delay between scans
+    }
+}

@@ -1,0 +1,2127 @@
+{
+  "device": "ESP32 WiFi Scanner",
+  "total_scans": 37,
+  "scans": [
+    {
+      "scan_time": "2026-03-03 16:44:25",
+      "timestamp_esp": 629121,
+      "total_networks": 10,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Cerahnian 2nd floor",
+          "rssi": -92,
+          "channel": 7,
+          "bssid": "6C:67:EF:C8:A3:F0",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -92,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "KH Noor",
+          "rssi": -96,
+          "channel": 11,
+          "bssid": "F8:64:B8:7A:03:D2",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -99,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:44:46",
+      "timestamp_esp": 650580,
+      "total_networks": 5,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -91,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -92,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:45:08",
+      "timestamp_esp": 672420,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -44,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -86,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -91,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -92,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -93,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -96,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:45:29",
+      "timestamp_esp": 694065,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -48,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -95,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:45:51",
+      "timestamp_esp": 715907,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -82,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -89,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:46:13",
+      "timestamp_esp": 737750,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -89,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:46:35",
+      "timestamp_esp": 759604,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -91,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -92,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "KH Noor",
+          "rssi": -97,
+          "channel": 11,
+          "bssid": "F8:64:B8:7A:03:D2",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:46:57",
+      "timestamp_esp": 781249,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -90,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -95,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:47:18",
+      "timestamp_esp": 802880,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -86,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:47:40",
+      "timestamp_esp": 824923,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -92,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:48:02",
+      "timestamp_esp": 846766,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -57,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -83,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -89,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -95,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:48:24",
+      "timestamp_esp": 868610,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -95,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -96,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:48:46",
+      "timestamp_esp": 890243,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:49:07",
+      "timestamp_esp": 911875,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -48,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:49:29",
+      "timestamp_esp": 933716,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -89,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -95,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:49:51",
+      "timestamp_esp": 955770,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -86,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -90,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -95,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:50:13",
+      "timestamp_esp": 977204,
+      "total_networks": 5,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -57,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -88,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:50:34",
+      "timestamp_esp": 998823,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -86,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -95,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:50:56",
+      "timestamp_esp": 1020665,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -82,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:51:18",
+      "timestamp_esp": 1042509,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -82,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -90,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -90,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:51:40",
+      "timestamp_esp": 1064353,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:52:02",
+      "timestamp_esp": 1086407,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -86,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -94,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -95,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:52:24",
+      "timestamp_esp": 1108263,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -56,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -86,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -95,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:52:45",
+      "timestamp_esp": 1129895,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -54,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -86,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -92,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:53:07",
+      "timestamp_esp": 1151748,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -47,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -82,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -98,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:53:29",
+      "timestamp_esp": 1173624,
+      "total_networks": 9,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -85,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -88,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -92,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -94,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "KH Noor",
+          "rssi": -98,
+          "channel": 11,
+          "bssid": "F8:64:B8:7A:03:D2",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:53:51",
+      "timestamp_esp": 1195492,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -88,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -89,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -93,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -96,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:54:13",
+      "timestamp_esp": 1217147,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -35,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -82,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -88,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -94,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:54:35",
+      "timestamp_esp": 1239002,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -36,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -44,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -85,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -86,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -90,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -92,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -96,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:54:57",
+      "timestamp_esp": 1260868,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -45,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -50,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -81,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -85,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -95,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:55:18",
+      "timestamp_esp": 1282524,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -40,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -87,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -87,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -89,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -89,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -93,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:55:41",
+      "timestamp_esp": 1304790,
+      "total_networks": 9,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -34,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -46,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -86,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -87,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -93,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -94,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -95,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:56:03",
+      "timestamp_esp": 1327069,
+      "total_networks": 9,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -39,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -88,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -91,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -91,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -92,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -94,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:56:25",
+      "timestamp_esp": 1348937,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -36,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -44,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -84,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -84,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "04F2G_327308",
+          "rssi": -94,
+          "channel": 3,
+          "bssid": "F0:8C:FB:32:73:08",
+          "security": "WPA-PSK"
+        },
+        {
+          "ssid": "MEILIKU",
+          "rssi": -97,
+          "channel": 11,
+          "bssid": "F0:3F:95:5B:DF:EC",
+          "security": "WPA/WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:56:46",
+      "timestamp_esp": 1370581,
+      "total_networks": 6,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -36,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -85,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -86,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -86,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -91,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:57:08",
+      "timestamp_esp": 1392634,
+      "total_networks": 8,
+      "networks": [
+        {
+          "ssid": "FLOW_97C423",
+          "rssi": -37,
+          "channel": 4,
+          "bssid": "1C:78:4B:97:C4:23",
+          "security": "Open"
+        },
+        {
+          "ssid": "plutan",
+          "rssi": -45,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -83,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -83,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -93,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -94,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    },
+    {
+      "scan_time": "2026-03-03 16:57:30",
+      "timestamp_esp": 1414489,
+      "total_networks": 7,
+      "networks": [
+        {
+          "ssid": "plutan",
+          "rssi": -41,
+          "channel": 1,
+          "bssid": "88:66:9F:4B:66:58",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibinu",
+          "rssi": -82,
+          "channel": 1,
+          "bssid": "6C:D8:19:86:A4:68",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Nine",
+          "rssi": -86,
+          "channel": 11,
+          "bssid": "30:E9:8E:05:35:44",
+          "security": "WPA/WPA2-PSK"
+        },
+        {
+          "ssid": "safaraz",
+          "rssi": -88,
+          "channel": 5,
+          "bssid": "48:96:D9:8D:13:30",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Mejikuhibiniu_atas",
+          "rssi": -90,
+          "channel": 1,
+          "bssid": "74:FE:CE:BC:34:48",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "FIVE-STAR",
+          "rssi": -91,
+          "channel": 6,
+          "bssid": "00:0A:00:73:62:7F",
+          "security": "WPA2-PSK"
+        },
+        {
+          "ssid": "Ramal 2.4G",
+          "rssi": -92,
+          "channel": 8,
+          "bssid": "C0:06:C3:F4:82:D1",
+          "security": "WPA2-PSK"
+        }
+      ]
+    }
+  ]
+}
