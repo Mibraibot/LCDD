@@ -14,8 +14,8 @@ void setupLoRa() {
   if (!LoRa.begin(433E6)) {
     Serial.println("{\"status\":\"error\", \"message\":\"Starting LoRa failed! Cek koneksi pin.\"}");
   } else {
-    // Konfigurasi harus sama dengan Node 1
-    LoRa.setSpreadingFactor(12);
+    // Konfigurasi harus sama dengan Gateway
+    LoRa.setSpreadingFactor(9); // Akselerasi Semi Real-Time
     LoRa.setSyncWord(0x34);
     
     Serial.println("{\"status\":\"success\", \"message\":\"LoRa Module Initialized (TX Mode)\"}");

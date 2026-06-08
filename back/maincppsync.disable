@@ -1,0 +1,162 @@
+#include <Arduino.h>
+#include "nrf_module.h"
+#include "lora_module.h"
+
+// ============================================================================
+// GLOBAL VARIABLE
+// ============================================================================
+
+// Timestamp dari Gateway
+unsigned long baseTime = 0;
+
+// millis() saat sync diterima
+unsigned long localMillisAtSync = 0;
+
+// Status sinkronisasi
+bool synced = false;
+
+// ============================================================================
+// GET CURRENT TIME FROM SYNC
+// ============================================================================
+String getWIBTimestamp() {
+
+  if (!synced) {
+    return "00:00:00";
+  }
+
+  // Hitung waktu sekarang berdasarkan offset millis
+  unsigned long currentEpoch =
+      baseTime + ((millis() - localMillisAtSync) / 1000);
+
+  // Konversi ke format jam
+  int seconds = currentEpoch % 60;
+  int minutes = (currentEpoch / 60) % 60;
+  int hours   = (currentEpoch / 3600) % 24;
+
+  char buf[20];
+  sprintf(buf, "%02d:%02d:%02d", hours, minutes, seconds);
+
+  return String(buf);
+}
+
+// ============================================================================
+// WAIT FOR SYNC FROM GATEWAY
+// ============================================================================
+void waitForSync() {
+
+  Serial.println("====================================");
+  Serial.println("MODE LISTENING");
+  Serial.println("Menunggu Sync Timestamp Gateway...");
+  Serial.println("====================================");
+
+  while (!synced) {
+
+    int packetSize = LoRa.parsePacket();
+
+    if (packetSize) {
+
+      String incoming = "";
+
+      while (LoRa.available()) {
+        incoming += (char)LoRa.read();
+      }
+
+      Serial.println("Data diterima:");
+      Serial.println(incoming);
+
+      // ----------------------------------------------------------------------
+      // CEK APAKAH PAKET SYNC
+      // ----------------------------------------------------------------------
+      if (incoming.indexOf("\"type\":\"sync\"") >= 0) {
+
+        int idx = incoming.indexOf("\"timestamp\":");
+
+        if (idx >= 0) {
+
+          String ts =
+              incoming.substring(idx + 12, incoming.indexOf("}", idx));
+
+          baseTime = ts.toInt();
+
+          localMillisAtSync = millis();
+
+          synced = true;
+
+          Serial.println("====================================");
+          Serial.println("SYNC BERHASIL");
+          Serial.print("Base Timestamp: ");
+          Serial.println(baseTime);
+          Serial.println("Node mulai scanning...");
+          Serial.println("====================================");
+        }
+      }
+    }
+
+    delay(10);
+  }
+}
+
+// ============================================================================
+// SETUP
+// ============================================================================
+void setup() {
+
+  Serial.begin(115200);
+
+  // --------------------------------------------------------------------------
+  // INIT NRF
+  // --------------------------------------------------------------------------
+  setupNRF();
+
+  Serial.println("{\"status\":\"success\", \"message\":\"NRF Scanner Started\"}");
+
+  // --------------------------------------------------------------------------
+  // INIT LORA
+  // --------------------------------------------------------------------------
+  setupLoRa();
+
+  Serial.println("{\"status\":\"success\", \"message\":\"LoRa Ready\"}");
+
+  // --------------------------------------------------------------------------
+  // WAIT FOR SYNC FROM GATEWAY
+  // --------------------------------------------------------------------------
+  waitForSync();
+}
+
+// ============================================================================
+// LOOP
+// ============================================================================
+void loop() {
+
+  // --------------------------------------------------------------------------
+  // 1. SCAN NRF
+  // --------------------------------------------------------------------------
+  String spectrumData = scanNRF();
+
+  // --------------------------------------------------------------------------
+  // 2. CREATE JSON PAYLOAD
+  // --------------------------------------------------------------------------
+  String jsonPayload = "{\n";
+
+  jsonPayload += "  \"node\": \"Node 1\",\n";
+
+  jsonPayload += "  \"timestamp_wib\": \"" +
+                 getWIBTimestamp() + "\",\n";
+
+  jsonPayload += "  \"data_hex\": \"" +
+                 spectrumData + "\"\n";
+
+  jsonPayload += "}";
+
+  // --------------------------------------------------------------------------
+  // 3. PRINT TO SERIAL
+  // --------------------------------------------------------------------------
+  Serial.println(jsonPayload);
+
+  // --------------------------------------------------------------------------
+  // 4. SEND VIA LORA
+  // --------------------------------------------------------------------------
+  sendLoRa(jsonPayload);
+
+  delay(500);
+}

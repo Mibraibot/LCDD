@@ -1,4 +1,5 @@
 .pio/build/esp32dev/src/main.cpp.o: src/main.cpp \
+ .pio/libdeps/esp32dev/Adafruit\ GFX\ Library/Adafruit_GFX.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/freertos/FreeRTOS.h \
@@ -133,4 +134,14 @@
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/esp_hw_support/include/soc/esp32/spiram.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
  /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- lib/nrf_module/nrf_module.h lib/lora_module/lora_module.h
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/Print.h \
+ .pio/libdeps/esp32dev/Adafruit\ GFX\ Library/gfxfont.h \
+ .pio/libdeps/esp32dev/Adafruit\ BusIO/Adafruit_I2CDevice.h \
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src/Wire.h \
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal.h \
+ .pio/libdeps/esp32dev/Adafruit\ BusIO/Adafruit_SPIDevice.h \
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
+ /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
+ .pio/libdeps/esp32dev/Adafruit\ SSD1306/Adafruit_SSD1306.h \
+ lib/lora_module/lora_module.h lib/nrf_module/nrf_module.h \
+ .pio/libdeps/esp32dev/LoRa/src/LoRa.h
