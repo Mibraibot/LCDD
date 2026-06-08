@@ -6,6 +6,7 @@
 #include "lora_module.h"
 #include "nrf_module.h"
 #include <LoRa.h>
+#include <WiFi.h>
 
 // ============================================================================
 // KONFIGURASI OLED & TOMBOL
@@ -27,7 +28,7 @@ bool synced = false;
 
 // --- KONFIGURASI IDENTITAS NODE ---
 const String NODE_ID =
-    "Node3"; // UBAH INI JADI "Node2" ATAU "Node3" UNTUK NODE LAIN
+    "Node1"; // UBAH INI JADI "Node2" ATAU "Node3" UNTUK NODE LAIN
 
 unsigned long getSendDelay() {
   if (NODE_ID == "Node2")
@@ -70,12 +71,12 @@ int currentThreatLevel = 1;
 // Variabel Siklus Scan Wifi
 enum WifiState {
   WIFI_STATE_SCANNING,
-  WIFI_STATE_SHOW_AP1,
-  WIFI_STATE_SHOW_AP2,
-  WIFI_STATE_SHOW_AP3
+  WIFI_STATE_SHOW_RESULTS
 };
 WifiState currentWifiState = WIFI_STATE_SCANNING;
 unsigned long wifiStateTimer = 0;
+int totalNetworksFound = 0;
+int currentNetworkIndex = 0;
 
 // ============================================================================
 // GET CURRENT TIME FROM SYNC
@@ -192,33 +193,34 @@ void updateDisplay() {
       for (int i = 0; i <= animFrame; i++) {
         display.print(F("| "));
       }
-    } else if (currentWifiState == WIFI_STATE_SHOW_AP1) {
+    } else if (currentWifiState == WIFI_STATE_SHOW_RESULTS) {
       display.setTextSize(1);
       display.setCursor(0, 0);
-      display.println(F("Found WiFi (1/3)"));
-      display.println(F("----------------"));
-      display.setTextSize(2);
-      display.println(F("RASA PAWON"));
-      display.setTextSize(1);
-      display.println(F("RSSI : -45 dBm\nCH   : 4"));
-    } else if (currentWifiState == WIFI_STATE_SHOW_AP2) {
-      display.setTextSize(1);
-      display.setCursor(0, 0);
-      display.println(F("Found WiFi (2/3)"));
-      display.println(F("----------------"));
-      display.setTextSize(2);
-      display.println(F("Kos_Putra"));
-      display.setTextSize(1);
-      display.println(F("RSSI : -68 dBm\nCH   : 1"));
-    } else if (currentWifiState == WIFI_STATE_SHOW_AP3) {
-      display.setTextSize(1);
-      display.setCursor(0, 0);
-      display.println(F("Found WiFi (3/3)"));
-      display.println(F("----------------"));
-      display.setTextSize(2);
-      display.println(F("Warkop_Free"));
-      display.setTextSize(1);
-      display.println(F("RSSI : -80 dBm\nCH   : 11"));
+      if (totalNetworksFound == 0) {
+        display.println(F("No WiFi Found!"));
+      } else {
+        display.print(F("Found WiFi ("));
+        display.print(currentNetworkIndex + 1);
+        display.print(F("/"));
+        display.print(totalNetworksFound);
+        display.println(F(")"));
+        display.println(F("----------------"));
+        
+        String ssidStr = WiFi.SSID(currentNetworkIndex);
+        if (ssidStr.length() > 10) {
+          display.setTextSize(1); // Kecilkan font jika terlalu panjang
+        } else {
+          display.setTextSize(2);
+        }
+        display.println(ssidStr);
+        
+        display.setTextSize(1);
+        display.print(F("RSSI : "));
+        display.print(WiFi.RSSI(currentNetworkIndex));
+        display.println(F(" dBm"));
+        display.print(F("CH   : "));
+        display.println(WiFi.channel(currentNetworkIndex));
+      }
     }
   } else if (currentMode == MODE_INFO) {
     display.setTextSize(1);
@@ -376,29 +378,35 @@ void handleScanWifiLogic() {
       animTimer = currentMillis;
       needUpdate = true;
     }
-    if (currentMillis - wifiStateTimer > 3000) {
-      currentWifiState = WIFI_STATE_SHOW_AP1;
+    
+    int n = WiFi.scanComplete();
+    if (n >= 0) {
+      totalNetworksFound = n;
+      currentNetworkIndex = 0;
+      currentWifiState = WIFI_STATE_SHOW_RESULTS;
       wifiStateTimer = currentMillis;
       needUpdate = true;
+    } else if (n == -2) {
+      // Jika status gagal/belum jalan, start ulang
+      WiFi.scanNetworks(true);
     }
-  } else if (currentWifiState == WIFI_STATE_SHOW_AP1) {
+  } else if (currentWifiState == WIFI_STATE_SHOW_RESULTS) {
     if (currentMillis - wifiStateTimer > 2500) {
-      currentWifiState = WIFI_STATE_SHOW_AP2;
+      currentNetworkIndex++;
       wifiStateTimer = currentMillis;
       needUpdate = true;
-    }
-  } else if (currentWifiState == WIFI_STATE_SHOW_AP2) {
-    if (currentMillis - wifiStateTimer > 2500) {
-      currentWifiState = WIFI_STATE_SHOW_AP3;
-      wifiStateTimer = currentMillis;
-      needUpdate = true;
-    }
-  } else if (currentWifiState == WIFI_STATE_SHOW_AP3) {
-    if (currentMillis - wifiStateTimer > 2500) {
-      currentWifiState = WIFI_STATE_SCANNING;
-      wifiStateTimer = currentMillis;
-      animFrame = 0;
-      needUpdate = true;
+      
+      if (totalNetworksFound == 0 || currentNetworkIndex >= totalNetworksFound) {
+        WiFi.scanDelete(); // Bersihkan memori scan
+        
+        // Otomatis kembali ke Mode Drone Detect
+        currentMode = MODE_DRONE_DETECT;
+        currentDroneState = STATE_SCANNING;
+        droneStateTimer = millis();
+        animTimer = millis();
+        animFrame = 0;
+        Serial.println("Scan WiFi Selesai, Kembali ke Mode: Drone Detect");
+      }
     }
   }
 
@@ -433,13 +441,28 @@ void checkForCommands() {
     } else if (incoming.indexOf("\"type\":\"command\"") >= 0) {
       if (incoming.indexOf("\"command\":\"POLL_" + NODE_ID + "\"") >= 0) {
         Serial.println(">>> Menerima Komando Panggilan Gateway <<<");
-        isMyTurn = true;
-        currentMode = MODE_DRONE_DETECT;
-        currentDroneState = STATE_SCANNING;
-        droneStateTimer = millis();
-        animTimer = millis();
-        animFrame = 0;
-        updateDisplay();
+        
+        if (currentMode == MODE_STANDBY || currentMode == MODE_DRONE_DETECT) {
+          isMyTurn = true;
+          currentMode = MODE_DRONE_DETECT;
+          currentDroneState = STATE_SCANNING;
+          droneStateTimer = millis();
+          animTimer = millis();
+          animFrame = 0;
+          updateDisplay();
+        } else {
+          // Sedang di mode WiFi Scan atau Info
+          // Balas di background agar tampilan layar OLED tidak terganggu
+          String jsonPayload = "{\n";
+          jsonPayload += "  \"node\": \"" + NODE_ID + "\",\n";
+          jsonPayload += "  \"timestamp_wib\": \"" + getWIBTimestamp() + "\",\n";
+          String hexToSend = (currentSpectrumData == "") ? "0000000000000000" : currentSpectrumData;
+          jsonPayload += "  \"data_hex\": \"" + hexToSend + "\"\n";
+          jsonPayload += "}";
+
+          Serial.println("Mengirim balasan background via LoRa:");
+          sendLoRa(jsonPayload);
+        }
       }
     }
   }
@@ -461,6 +484,10 @@ void setup() {
   // Init NRF & LoRa
   setupNRF();
   setupLoRa();
+  
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+
   Serial.println("System Ready.");
 
   // Meminta sinkronisasi dari Gateway (wajib sebelum masuk standby)
@@ -522,6 +549,8 @@ void loop() {
       animTimer = millis();
       animFrame = 0;
       Serial.println("Masuk Mode: Scan Wifi");
+      
+      WiFi.scanNetworks(true); // Mulai scan asinkron
     } else {
       // Dari SCAN WIFI atau INFO kembali ke STANDBY
       currentMode = MODE_STANDBY;
