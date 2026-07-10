@@ -1,4 +1,4 @@
 .pio/build/esp32dev/FrameworkArduino/HWCDC.cpp.o: \
- /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/HWCDC.cpp \
- /Users/bayuish/.platformio/packages/framework-arduinoespressif32/cores/esp32/USB.h \
- /Users/bayuish/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/dio_qspi/include/sdkconfig.h
+ C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/cores/esp32/HWCDC.cpp \
+ C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/cores/esp32/USB.h \
+ C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/dio_qspi/include/sdkconfig.h

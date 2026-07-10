@@ -3,10 +3,7 @@
 
 #include <Arduino.h>
 
-// Fungsi untuk inisialisasi LoRa
 void setupLoRa();
-
-// Fungsi untuk mengirim data via LoRa
 void sendLoRa(String payload);
 
 #endif
