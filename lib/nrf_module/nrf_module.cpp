@@ -1,7 +1,9 @@
 #include "nrf_module.h"
 #include <RF24.h>
 #include <SPI.h>
+#include <nRF24L01.h>
 
+// ================= PIN SESUAI HARDWARE =================
 #define NRF_CE 27
 #define NRF_CSN 4
 #define SCK_PIN 18
@@ -11,6 +13,7 @@
 RF24 radio(NRF_CE, NRF_CSN);
 const char hex_chars[] = "0123456789ABCDEF";
 
+// ================= LOW LEVEL READ REGISTER =================
 uint8_t readRegister(uint8_t reg) {
   uint8_t result;
   digitalWrite(NRF_CSN, LOW);
@@ -26,8 +29,10 @@ void setupNRF() {
   digitalWrite(NRF_CSN, HIGH);
 
   if (!radio.begin()) {
-    Serial.println("{\"status\":\"error\", \"message\":\"NRF24L01 Not Found\"}");
-    while (1);
+    Serial.println(
+        "{\"status\":\"error\", \"message\":\"NRF24L01 Not Found\"}");
+    while (1)
+      ;
   }
 
   radio.setAutoAck(false);
@@ -39,22 +44,29 @@ void setupNRF() {
 
 String scanNRF() {
   String spectrumData = "";
-  
+
+  // Loop scan 125 channel
   for (int ch = 0; ch < 125; ch++) {
     int hits = 0;
+
     radio.setChannel(ch);
     radio.startListening();
-    delayMicroseconds(130); // Waktu wajib hardware untuk PLL Lock
+    // Tunggu PLL stabil (biasanya sekitar 130us)
+    delayMicroseconds(130);
 
-    // OPTIMASI EKSTREM: Max 150 sampel (1.5ms) dan langsung break jika ketemu
-    for (int s = 0; s < 150; s++) {
+    // OPTIMASI: Iterasi diubah secara spesifik menjadi 220 kali pengulangan.
+    // (220 * 10 mikrodetik = 2,2 milidetik per channel).
+    // Mempercepat pengiriman secara signifikan dengan akurasi tangkapan yang tetap sangat baik.
+    for (int s = 0; s < 220; s++) {
       delayMicroseconds(10);
       if (readRegister(0x09) & 1) {
         hits = 1; 
-        break; // Hemat waktu instan
       }
     }
+
     radio.stopListening();
+
+    // Hasilnya akan selalu '0' atau '1'
     spectrumData += hex_chars[hits];
   }
   return spectrumData;

@@ -10,7 +10,6 @@
             "includePath": [
                 "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/include",
                 "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/src",
-                "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/lib/nrf_module",
                 "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/lib/lora_module",
                 "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/.pio/libdeps/esp32dev/Adafruit SSD1306",
@@ -247,6 +246,7 @@
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
+                "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                 ""
@@ -256,7 +256,6 @@
                 "path": [
                     "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/include",
                     "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/src",
-                    "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/lib/nrf_module",
                     "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/lib/lora_module",
                     "C:/Users/Lenovo/OneDrive/Documents/GitHub/LCDD/.pio/libdeps/esp32dev/Adafruit SSD1306",
@@ -493,6 +492,7 @@
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
+                    "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "C:/Users/Lenovo/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                     ""

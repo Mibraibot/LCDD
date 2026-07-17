@@ -2,81 +2,81 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 #include <Wire.h>
+
 #include "lora_module.h"
 #include "nrf_module.h"
 #include <LoRa.h>
-#include <WiFi.h>
 
+// ============================================================================
+// KONFIGURASI OLED & TOMBOL
+// ============================================================================
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
 #define BUTTON_PIN 15
 
-// GLOBAL VARIABLE LORA SYNC & IDENTITAS
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+// ============================================================================
+// KONFIGURASI IDENTITAS NODE
+// ============================================================================
+const char NODE_ID[] = "Node3"; // UBAH JADI "Node2" / "Node3" UNTUK NODE LAIN
+
+String pollCmd; // Pola komando poll milik node ini (dibentuk sekali di setup)
+
+// ============================================================================
+// GLOBAL VARIABLE LORA SYNC
+// ============================================================================
 unsigned long baseTime = 0;
 unsigned long localMillisAtSync = 0;
 bool synced = false;
 
-const String NODE_ID = "Node2"; // UBAH INI SESUAI IDENTITAS FISIK NODE (Node1/2/3)
-
+// ============================================================================
 // STATE & MODE APP
-enum AppMode { MODE_STANDBY, MODE_DRONE_DETECT, MODE_SCAN_WIFI, MODE_INFO };
+// ============================================================================
+enum AppMode { MODE_STANDBY, MODE_DETECT, MODE_INFO };
 AppMode currentMode = MODE_STANDBY;
 
+// Layar "Sending" (ditahan sebentar agar terbaca, non-blocking)
+bool showingSendScreen = false;
+unsigned long sendScreenTimer = 0;
+const unsigned long SEND_SCREEN_HOLD = 800; // ms
+
+// Debounce tombol
 bool buttonState = HIGH;
 bool lastButtonState = HIGH;
 unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 50;
+const unsigned long debounceDelay = 50;
 
+// Double click
 bool waitingForDoubleClick = false;
 unsigned long clickTimer = 0;
-unsigned long infoStateTimer = 0; 
+unsigned long infoStateTimer = 0;
 
-int animFrame = 0;
+// Animasi spinner
+uint8_t animFrame = 0;
 unsigned long animTimer = 0;
 
-bool isMyTurn = false;
-String currentSpectrumData = "";
-int currentThreatLevel = 1;
+// Data scan terakhir (dipakai ulang bila perlu)
+String lastSpectrumData = "";
 
-enum WifiState { WIFI_STATE_SCANNING, WIFI_STATE_SHOW_RESULTS };
-WifiState currentWifiState = WIFI_STATE_SCANNING;
-unsigned long wifiStateTimer = 0;
-int totalNetworksFound = 0;
-int currentNetworkIndex = 0;
-
-String getWIBTimestamp() {
-  if (!synced) return "00:00:00";
-  unsigned long currentEpoch = baseTime + ((millis() - localMillisAtSync) / 1000);
-  int seconds = currentEpoch % 60;
-  int minutes = (currentEpoch / 60) % 60;
-  int hours = (currentEpoch / 3600) % 24;
-  char buf[20];
-  sprintf(buf, "%02d:%02d:%02d", hours, minutes, seconds);
-  return String(buf);
-}
-
-int calculateThreatLevel(String data_hex) {
-  int total_energy = 0;
-  int high_peaks = 0;
-  for (int i = 0; i < data_hex.length(); i++) {
-    int val = 0;
-    char c = data_hex[i];
-    if (c >= '0' && c <= '9') val = c - '0';
-    else if (c >= 'a' && c <= 'f') val = c - 'a' + 10;
-    else if (c >= 'A' && c <= 'F') val = c - 'A' + 10;
-    total_energy += val;
-    if (val >= 4) high_peaks++;
+// ============================================================================
+// TIMESTAMP WIB DARI SYNC (tanpa String, langsung ke buffer)
+// ============================================================================
+void getWIBTimestamp(char *buf, size_t len) {
+  if (!synced) {
+    snprintf(buf, len, "00:00:00");
+    return;
   }
-  if (total_energy >= 30 || high_peaks >= 2) return 3; 
-  else if (total_energy >= 15) return 2; 
-  else return 1; 
+  unsigned long epoch = baseTime + ((millis() - localMillisAtSync) / 1000);
+  snprintf(buf, len, "%02lu:%02lu:%02lu", (epoch / 3600) % 24,
+           (epoch / 60) % 60, epoch % 60);
 }
 
-// LAYAR OLED STATIS (TIDAK ADA DELAY ATAU ANIMASI BLOKING)
+// ============================================================================
+// FUNGSI RENDER OLED
+// ============================================================================
 void updateDisplay() {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
@@ -92,74 +92,91 @@ void updateDisplay() {
     display.println(F(" DETECTION)"));
     display.setCursor(0, 50);
     display.println(F("Pilih mode (klik)"));
-  } else if (currentMode == MODE_DRONE_DETECT) {
-    display.setTextSize(1);
-    display.setCursor(0, 0);
-    display.print(F("Node: "));
-    display.println(NODE_ID);
-    display.setCursor(0, 20);
-    display.println(F("Threat Status:"));
-    display.setCursor(0, 35);
-    display.setTextSize(2);
-    
-    if (currentThreatLevel == 1) display.println(F("SAFE"));
-    else if (currentThreatLevel == 2) display.println(F("WARNING"));
-    else if (currentThreatLevel == 3) display.println(F("CRITICAL"));
-    else display.println(F("UNKNOWN"));
-  } else if (currentMode == MODE_SCAN_WIFI) {
-    if (currentWifiState == WIFI_STATE_SCANNING) {
-      display.setTextSize(2);
-      display.setCursor(10, 10);
-      display.print(F("WIFI SCAN"));
-      display.setCursor(25, 40);
-      for (int i = 0; i <= animFrame; i++) {
-        display.print(F("| "));
-      }
-    } else if (currentWifiState == WIFI_STATE_SHOW_RESULTS) {
+
+  } else if (currentMode == MODE_DETECT) {
+    if (showingSendScreen) {
       display.setTextSize(1);
-      display.setCursor(0, 0);
-      if (totalNetworksFound == 0) {
-        display.println(F("No WiFi Found!"));
-      } else {
-        display.print(F("Found WiFi ("));
-        display.print(currentNetworkIndex + 1);
-        display.print(F("/"));
-        display.print(totalNetworksFound);
-        display.println(F(")"));
-        display.println(F("----------------"));
-        
-        String ssidStr = WiFi.SSID(currentNetworkIndex);
-        if (ssidStr.length() > 10) display.setTextSize(1); 
-        else display.setTextSize(2);
-        
-        display.println(ssidStr);
-        display.setTextSize(1);
-        display.print(F("RSSI : "));
-        display.print(WiFi.RSSI(currentNetworkIndex));
-        display.println(F(" dBm"));
-        display.print(F("CH   : "));
-        display.println(WiFi.channel(currentNetworkIndex));
-      }
+      display.setCursor(10, 20);
+      display.println(F("Sending To"));
+      display.setCursor(10, 35);
+      display.println(F("Gateway..."));
+    } else {
+      display.setTextSize(2);
+      display.setCursor(5, 10);
+      display.print(F("WAITING"));
+      display.setTextSize(1);
+      display.setCursor(5, 30);
+      display.print(F("Gateway Poll"));
+      display.setTextSize(3);
+      display.setCursor(85, 30);
+      const char spinner[4] = {'-', '\\', '|', '/'};
+      display.print(spinner[animFrame]);
     }
+
   } else if (currentMode == MODE_INFO) {
     display.setTextSize(1);
-    display.setCursor(0, 0);
     display.println(F("--- NODE INFO ---"));
     display.setCursor(0, 15);
     display.print(F("Nama: "));
     display.println(NODE_ID);
     display.setCursor(0, 30);
-    display.println(F("Lokasi (Lat, Lng):"));
+    display.println(F("Lokasi  :"));
     display.setCursor(0, 45);
-    display.println(F("-6.200000"));
-    display.setCursor(0, 55);
-    display.println(F("106.816666"));
+    display.println(F("Diatur via Dashboard"));
   }
   display.display();
 }
 
+// ============================================================================
+// PARSING PESAN SYNC (dipakai waitForSync & checkForCommands)
+// ============================================================================
+bool applySync(const String &msg) {
+  int idx = msg.indexOf(F("\"time\":"));
+  if (idx < 0)
+    return false;
+  baseTime = msg.substring(idx + 7, msg.indexOf('}', idx)).toInt();
+  localMillisAtSync = millis();
+  synced = true;
+  Serial.print(F(">>> SYNC diterima | Base Timestamp: "));
+  Serial.println(baseTime);
+  return true;
+}
+
+// ============================================================================
+// SCAN + KIRIM BALASAN POLL KE GATEWAY
+// showOnOled=false -> balas di background (layar tidak diganggu)
+// ============================================================================
+void replyToPoll(bool showOnOled) {
+  if (showOnOled) {
+    showingSendScreen = true;
+    sendScreenTimer = millis();
+    updateDisplay(); // Tampilkan "Sending" SEBELUM scan+kirim
+  }
+
+  lastSpectrumData = scanNRF(); // ~290 ms
+
+  char ts[9];
+  getWIBTimestamp(ts, sizeof(ts));
+
+  // JSON kompak satu baris: airtime LoRa lebih singkat, tetap kompatibel
+  // dengan parser gateway (ArduinoJson) dan regex app.py
+  char payload[224];
+  snprintf(payload, sizeof(payload),
+           "{\"node\":\"%s\",\"timestamp_wib\":\"%s\",\"data_hex\":\"%s\"}",
+           NODE_ID, ts, lastSpectrumData.c_str());
+
+  Serial.println(F("Mengirim via LoRa:"));
+  Serial.println(payload);
+  sendLoRa(String(payload));
+}
+
+// ============================================================================
+// SINKRONISASI AWAL (BLOCKING SESAAT, WAJIB SEBELUM STANDBY)
+// ============================================================================
 void waitForSync() {
-  Serial.println("Menunggu Sync Timestamp Gateway...");
+  Serial.println(F("===================================="));
+  Serial.println(F("Menunggu Sync Timestamp Gateway..."));
+
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -169,210 +186,166 @@ void waitForSync() {
   display.println(F("From Gateway..."));
   display.display();
 
-  int dotCount = 0;
+  uint8_t dotCount = 0;
   unsigned long lastDotTime = millis();
 
   while (!synced) {
     if (millis() - lastDotTime > 500) {
       lastDotTime = millis();
-      display.fillRect(10, 45, 100, 10, SSD1306_BLACK); 
+      display.fillRect(10, 45, 100, 10, SSD1306_BLACK);
       display.setCursor(10, 45);
-      for (int i = 0; i <= dotCount; i++) display.print(".");
+      for (uint8_t i = 0; i <= dotCount; i++)
+        display.print('.');
       display.display();
       dotCount = (dotCount + 1) % 5;
     }
 
     int packetSize = LoRa.parsePacket();
     if (packetSize) {
-      String incoming = "";
-      while (LoRa.available()) incoming += (char)LoRa.read();
-      
-      if (incoming.indexOf("\"type\":\"sync\"") >= 0) {
-        int idx = incoming.indexOf("\"time\":");
-        if (idx >= 0) {
-          String ts = incoming.substring(idx + 7, incoming.indexOf("}", idx));
-          baseTime = ts.toInt();
-          localMillisAtSync = millis();
-          synced = true;
+      String incoming;
+      incoming.reserve(packetSize);
+      while (LoRa.available())
+        incoming += (char)LoRa.read();
 
-          display.clearDisplay();
-          display.setCursor(10, 25);
-          display.println(F("SYNC SUCCESS!"));
-          display.display();
-          delay(1000);
-        }
+      if (incoming.indexOf(F("\"type\":\"sync\"")) >= 0 &&
+          applySync(incoming)) {
+        display.clearDisplay();
+        display.setCursor(10, 25);
+        display.println(F("SYNC SUCCESS!"));
+        display.display();
+        delay(1000);
       }
     }
     delay(10);
   }
 }
 
-// LOGIKA DRONE DETECT SUPER CEPAT (LANGSUNG TEMBAK TANPA JEDA)
-void handleDroneDetectLogic() {
-  if (currentMode != MODE_DRONE_DETECT) return;
-
-  if (isMyTurn) {
-    currentSpectrumData = scanNRF();
-    currentThreatLevel = calculateThreatLevel(currentSpectrumData);
-
-    String jsonPayload = "{\n";
-    jsonPayload += "  \"node\": \"" + NODE_ID + "\",\n";
-    jsonPayload += "  \"captured_at\": \"" + getWIBTimestamp() + "\",\n";
-    jsonPayload += "  \"data_hex\": \"" + currentSpectrumData + "\"\n";
-    jsonPayload += "}";
-
-    Serial.println("Mengirim via LoRa...");
-    sendLoRa(jsonPayload);
-    
-    isMyTurn = false; 
-    updateDisplay(); 
-  }
-}
-
-void handleScanWifiLogic() {
-  if (currentMode != MODE_SCAN_WIFI) return;
-
-  unsigned long currentMillis = millis();
-  bool needUpdate = false;
-
-  if (currentWifiState == WIFI_STATE_SCANNING) {
-    if (currentMillis - animTimer > 500) {
-      animFrame = (animFrame + 1) % 4;
-      animTimer = currentMillis;
-      needUpdate = true;
-    }
-    
-    int n = WiFi.scanComplete();
-    if (n >= 0) {
-      totalNetworksFound = n;
-      currentNetworkIndex = 0;
-      currentWifiState = WIFI_STATE_SHOW_RESULTS;
-      wifiStateTimer = currentMillis;
-      needUpdate = true;
-    } else if (n == -2) {
-      WiFi.scanNetworks(true);
-    }
-  } else if (currentWifiState == WIFI_STATE_SHOW_RESULTS) {
-    if (currentMillis - wifiStateTimer > 2500) {
-      currentNetworkIndex++;
-      wifiStateTimer = currentMillis;
-      needUpdate = true;
-      
-      if (totalNetworksFound == 0 || currentNetworkIndex >= totalNetworksFound) {
-        WiFi.scanDelete(); 
-        currentMode = MODE_DRONE_DETECT;
-        updateDisplay();
-      }
-    }
-  }
-  if (needUpdate) updateDisplay();
-}
-
+// ============================================================================
+// PEMANTAUAN KOMANDO DARI GATEWAY (SYNC DINAMIS + POLL)
+// ============================================================================
 void checkForCommands() {
   int packetSize = LoRa.parsePacket();
-  if (packetSize) {
-    String incoming = "";
-    while (LoRa.available()) incoming += (char)LoRa.read();
+  if (!packetSize)
+    return;
 
-    if (incoming.indexOf("\"type\":\"sync\"") >= 0) {
-      int idx = incoming.indexOf("\"time\":");
-      if (idx >= 0) {
-        String ts = incoming.substring(idx + 7, incoming.indexOf("}", idx));
-        baseTime = ts.toInt();
-        localMillisAtSync = millis();
-        synced = true;
-      }
-    } else if (incoming.indexOf("\"type\":\"command\"") >= 0) {
-      if (incoming.indexOf("\"command\":\"POLL_" + NODE_ID + "\"") >= 0) {
-        Serial.println(">>> Menerima Komando Panggilan Gateway <<<");
-        
-        if (currentMode == MODE_STANDBY || currentMode == MODE_DRONE_DETECT) {
-          currentMode = MODE_DRONE_DETECT;
-          isMyTurn = true;
-        } else {
-          String jsonPayload = "{\n";
-          jsonPayload += "  \"node\": \"" + NODE_ID + "\",\n";
-          jsonPayload += "  \"captured_at\": \"" + getWIBTimestamp() + "\",\n";
-          String hexToSend = (currentSpectrumData == "") ? "0000000000000000" : currentSpectrumData;
-          jsonPayload += "  \"data_hex\": \"" + hexToSend + "\"\n";
-          jsonPayload += "}";
-          sendLoRa(jsonPayload);
-        }
-      }
+  String incoming;
+  incoming.reserve(packetSize);
+  while (LoRa.available())
+    incoming += (char)LoRa.read();
+
+  if (incoming.indexOf(F("\"type\":\"sync\"")) >= 0) {
+    // Sync dinamis: perbarui jam tanpa mengubah mode/layar
+    applySync(incoming);
+
+  } else if (incoming.indexOf(pollCmd) >= 0) {
+    Serial.println(F(">>> Menerima Komando Panggilan Gateway <<<"));
+
+    if (currentMode == MODE_INFO) {
+      // Balas di background agar layar INFO tidak terganggu
+      replyToPoll(false);
+    } else {
+      // Dari STANDBY otomatis masuk mode deteksi
+      currentMode = MODE_DETECT;
+      replyToPoll(true);
     }
   }
 }
 
+// ============================================================================
+// SETUP
+// ============================================================================
 void setup() {
   Serial.begin(115200);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("Gagal menemukan SSD1306. Cek wiring!"));
-    for (;;);
+    for (;;)
+      ;
   }
 
   setupNRF();
   setupLoRa();
-  
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
 
-  Serial.println("System Ready.");
+  // Pola komando lengkap agar tidak salah cocok (mis. POLL_Node1 vs Node10)
+  pollCmd = String(F("\"command\":\"POLL_")) + NODE_ID + "\"";
+  lastSpectrumData.reserve(126);
+
+  Serial.println(F("System Ready."));
+
   waitForSync();
   updateDisplay();
 }
 
+// ============================================================================
+// LOOP
+// ============================================================================
 void loop() {
+  unsigned long now = millis();
+
+  // --- Pantau komando gateway terus-menerus ---
   checkForCommands();
 
+  // --- Debouncing tombol ---
   bool reading = digitalRead(BUTTON_PIN);
-  if (reading != lastButtonState) {
-    lastDebounceTime = millis();
-  }
+  if (reading != lastButtonState)
+    lastDebounceTime = now;
 
-  if ((millis() - lastDebounceTime) > debounceDelay) {
+  if ((now - lastDebounceTime) > debounceDelay) {
     if (reading != buttonState) {
       buttonState = reading;
-      if (buttonState == LOW) { 
-        if (waitingForDoubleClick && (millis() - clickTimer < 300)) {
+      if (buttonState == LOW) {
+        if (waitingForDoubleClick && (now - clickTimer < 300)) {
+          // DOUBLE CLICK -> Mode Info
           waitingForDoubleClick = false;
           currentMode = MODE_INFO;
-          infoStateTimer = millis();
+          infoStateTimer = now;
+          Serial.println(F("Masuk Mode: Info"));
           updateDisplay();
         } else {
           waitingForDoubleClick = true;
-          clickTimer = millis();
+          clickTimer = now;
         }
       }
     }
   }
   lastButtonState = reading;
 
-  if (waitingForDoubleClick && (millis() - clickTimer >= 300)) {
+  // --- Single click: toggle Standby <-> Detect ---
+  if (waitingForDoubleClick && (now - clickTimer >= 300)) {
     waitingForDoubleClick = false;
+
     if (currentMode == MODE_STANDBY) {
-      currentMode = MODE_DRONE_DETECT;
-    } else if (currentMode == MODE_DRONE_DETECT) {
-      currentMode = MODE_SCAN_WIFI;
-      currentWifiState = WIFI_STATE_SCANNING;
-      wifiStateTimer = millis();
-      animTimer = millis();
+      currentMode = MODE_DETECT;
+      showingSendScreen = false;
       animFrame = 0;
-      WiFi.scanNetworks(true); 
+      animTimer = now;
+      Serial.println(F("Masuk Mode: Drone Detect"));
     } else {
       currentMode = MODE_STANDBY;
+      Serial.println(F("Masuk Mode: Standby"));
     }
     updateDisplay();
   }
 
-  if (currentMode == MODE_DRONE_DETECT) {
-    handleDroneDetectLogic();
-  } else if (currentMode == MODE_SCAN_WIFI) {
-    handleScanWifiLogic();
+  // --- Logika layar per mode (non-blocking) ---
+  if (currentMode == MODE_DETECT) {
+    if (showingSendScreen) {
+      if (now - sendScreenTimer > SEND_SCREEN_HOLD) {
+        showingSendScreen = false;
+        animFrame = 0;
+        animTimer = now;
+        updateDisplay();
+      }
+    } else if (now - animTimer > 500) {
+      animFrame = (animFrame + 1) % 4;
+      animTimer = now;
+      updateDisplay();
+    }
   } else if (currentMode == MODE_INFO) {
-    if (millis() - infoStateTimer >= 3000) {
+    if (now - infoStateTimer >= 3000) {
       currentMode = MODE_STANDBY;
+      Serial.println(F("Masuk Mode: Standby (Auto Exit Info)"));
       updateDisplay();
     }
   }
