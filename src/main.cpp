@@ -62,6 +62,16 @@ unsigned long animTimer = 0;
 String lastSpectrumData = "";
 
 // ============================================================================
+// INSTRUMENTASI QoS
+// txSeq  : nomor urut balasan (naik 1 tiap kirim). Gateway/backend memakai
+//          celah nomor urut ini untuk menghitung packet loss ujung-ke-ujung.
+// "proc" : lama proses di node (terima poll -> siap kirim), dikirim di payload
+//          agar backend bisa memisahkan delay link LoRa murni dari waktu scan:
+//          link_delay = RTT_gateway - proc.
+// ============================================================================
+uint32_t txSeq = 0;
+
+// ============================================================================
 // PEMULIHAN MANDIRI RADIO
 // Gateway mem-poll tiap ~1-3 dtk, jadi hening total selama 60 dtk berarti
 // radio kemungkinan macet (mis. efek glitch di bus SPI yang dipakai bersama
@@ -163,18 +173,28 @@ bool applySync(const String &msg) {
 // showOnOled=false -> balas di background (layar tidak diganggu)
 // ============================================================================
 void replyToPoll(bool showOnOled) {
+  // Titik ukur QoS: procStart = saat poll diterima (fungsi ini dipanggil
+  // langsung dari parser paket), procMs = scan NRF + format payload.
+  unsigned long procStart = millis();
+
   lastSpectrumData = scanNRF(); // ~290 ms (sampling TIDAK diubah)
 
   char ts[9];
   getWIBTimestamp(ts, sizeof(ts));
 
+  txSeq++;
+  unsigned long procMs = millis() - procStart;
+
   // data_hex dikirim apa adanya: murni 125 karakter '0'/'1' (konsep RPD
   // nRF24, satu karakter per kanal) — tanpa pemadatan/akumulasi apa pun.
-  // Di SF7 airtime payload 182 byte ini ~292 ms.
-  char payload[224];
+  // Tambahan field QoS "seq" & "proc" menambah ~25 byte payload
+  // (airtime SF7 naik ~40 ms, masih jauh di bawah POLL_TIMEOUT gateway).
+  char payload[256];
   snprintf(payload, sizeof(payload),
-           "{\"node\":\"%s\",\"timestamp_wib\":\"%s\",\"data_hex\":\"%s\"}",
-           NODE_ID, ts, lastSpectrumData.c_str());
+           "{\"node\":\"%s\",\"timestamp_wib\":\"%s\",\"seq\":%lu,"
+           "\"proc\":%lu,\"data_hex\":\"%s\"}",
+           NODE_ID, ts, (unsigned long)txSeq, procMs,
+           lastSpectrumData.c_str());
 
   // Kirim DULU, log serial & OLED menyusul: keduanya (~45 ms) tadinya
   // menahan balasan di jalur kritis poll->reply. Gateway menerima ~45 ms
