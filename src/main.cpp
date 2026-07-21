@@ -62,6 +62,16 @@ unsigned long animTimer = 0;
 String lastSpectrumData = "";
 
 // ============================================================================
+// PEMULIHAN MANDIRI RADIO
+// Gateway mem-poll tiap ~1-3 dtk, jadi hening total selama 60 dtk berarti
+// radio kemungkinan macet (mis. efek glitch di bus SPI yang dipakai bersama
+// NRF24) — bukan sekadar giliran poll yang belum datang. Solusinya reset +
+// konfigurasi ulang modul LoRa murni via software (reinitLoRa).
+// ============================================================================
+unsigned long lastPacketHeard = 0;
+const unsigned long RADIO_STALL_MS = 60000;
+
+// ============================================================================
 // TIMESTAMP WIB DARI SYNC (tanpa String, langsung ke buffer)
 // ============================================================================
 void getWIBTimestamp(char *buf, size_t len) {
@@ -128,17 +138,23 @@ void updateDisplay() {
 }
 
 // ============================================================================
-// PARSING PESAN SYNC (dipakai waitForSync & checkForCommands)
+// PARSING WAKTU DARI PAKET GATEWAY
+// Berlaku untuk broadcast sync ({"type":"sync","time":...}) MAUPUN waktu
+// yang dititipkan gateway di setiap poll ({"command":...,"time":...}).
 // ============================================================================
 bool applySync(const String &msg) {
   int idx = msg.indexOf(F("\"time\":"));
   if (idx < 0)
     return false;
+  bool firstSync = !synced;
   baseTime = msg.substring(idx + 7, msg.indexOf('}', idx)).toInt();
   localMillisAtSync = millis();
   synced = true;
-  Serial.print(F(">>> SYNC diterima | Base Timestamp: "));
-  Serial.println(baseTime);
+  if (firstSync) {
+    // Refresh berkala berlangsung diam-diam; hanya sync pertama yang dicetak
+    Serial.print(F(">>> SYNC diterima | Base Timestamp: "));
+    Serial.println(baseTime);
+  }
   return true;
 }
 
@@ -147,27 +163,59 @@ bool applySync(const String &msg) {
 // showOnOled=false -> balas di background (layar tidak diganggu)
 // ============================================================================
 void replyToPoll(bool showOnOled) {
-  if (showOnOled) {
-    showingSendScreen = true;
-    sendScreenTimer = millis();
-    updateDisplay(); // Tampilkan "Sending" SEBELUM scan+kirim
-  }
-
-  lastSpectrumData = scanNRF(); // ~290 ms
+  lastSpectrumData = scanNRF(); // ~290 ms (sampling TIDAK diubah)
 
   char ts[9];
   getWIBTimestamp(ts, sizeof(ts));
 
-  // JSON kompak satu baris: airtime LoRa lebih singkat, tetap kompatibel
-  // dengan parser gateway (ArduinoJson) dan regex app.py
+  // data_hex dikirim apa adanya: murni 125 karakter '0'/'1' (konsep RPD
+  // nRF24, satu karakter per kanal) — tanpa pemadatan/akumulasi apa pun.
+  // Di SF7 airtime payload 182 byte ini ~292 ms.
   char payload[224];
   snprintf(payload, sizeof(payload),
            "{\"node\":\"%s\",\"timestamp_wib\":\"%s\",\"data_hex\":\"%s\"}",
            NODE_ID, ts, lastSpectrumData.c_str());
 
-  Serial.println(F("Mengirim via LoRa:"));
-  Serial.println(payload);
+  // Kirim DULU, log serial & OLED menyusul: keduanya (~45 ms) tadinya
+  // menahan balasan di jalur kritis poll->reply. Gateway menerima ~45 ms
+  // lebih cepat tanpa mengubah isi data sedikit pun.
   sendLoRa(String(payload));
+
+  Serial.println(F("Terkirim via LoRa:"));
+  Serial.println(payload);
+
+  if (showOnOled) {
+    showingSendScreen = true;
+    sendScreenTimer = millis();
+    updateDisplay();
+  }
+}
+
+// ============================================================================
+// PEMROSESAN SATU PAKET LORA (dipakai waitForSync & checkForCommands)
+// Sync dan poll TIDAK lagi eksklusif: setiap paket yang membawa "time"
+// memperbarui jam (broadcast sync ATAU poll ber-piggyback waktu), dan bila
+// paket itu juga poll untuk node ini, langsung dibalas. Dengan ini node yang
+// baru restart ikut siklus polling lagi pada poll PERTAMA yang didengarnya,
+// tidak perlu menunggu broadcast sync 5-menit — penyebab utama node terlihat
+// "timeout terus" di gateway.
+// ============================================================================
+void processLoRaMessage(const String &incoming) {
+  if (incoming.indexOf(F("\"time\":")) >= 0)
+    applySync(incoming);
+
+  if (incoming.indexOf(pollCmd) >= 0) {
+    Serial.println(F(">>> Menerima Komando Panggilan Gateway <<<"));
+
+    if (currentMode == MODE_INFO) {
+      // Balas di background agar layar INFO tidak terganggu
+      replyToPoll(false);
+    } else {
+      // Dari STANDBY otomatis masuk mode deteksi
+      currentMode = MODE_DETECT;
+      replyToPoll(true);
+    }
+  }
 }
 
 // ============================================================================
@@ -188,6 +236,7 @@ void waitForSync() {
 
   uint8_t dotCount = 0;
   unsigned long lastDotTime = millis();
+  lastPacketHeard = millis();
 
   while (!synced) {
     if (millis() - lastDotTime > 500) {
@@ -200,20 +249,31 @@ void waitForSync() {
       dotCount = (dotCount + 1) % 5;
     }
 
+    // Radio hening terlalu lama saat menunggu sync juga dipulihkan di sini,
+    // agar node tidak terjebak selamanya bila radionya yang bermasalah
+    if (millis() - lastPacketHeard > RADIO_STALL_MS) {
+      Serial.println(F(">>> 60 dtk tanpa paket LoRa — re-init radio"));
+      reinitLoRa();
+      lastPacketHeard = millis();
+    }
+
     int packetSize = LoRa.parsePacket();
     if (packetSize) {
+      lastPacketHeard = millis();
       String incoming;
       incoming.reserve(packetSize);
       while (LoRa.available())
         incoming += (char)LoRa.read();
 
-      if (incoming.indexOf(F("\"type\":\"sync\"")) >= 0 &&
-          applySync(incoming)) {
+      // Waktu bisa datang dari broadcast sync maupun poll ber-piggyback;
+      // bila paket itu poll untuk node ini, langsung ikut dibalas di sini.
+      processLoRaMessage(incoming);
+      if (synced) {
         display.clearDisplay();
         display.setCursor(10, 25);
         display.println(F("SYNC SUCCESS!"));
         display.display();
-        delay(1000);
+        delay(500);
       }
     }
     delay(10);
@@ -228,27 +288,14 @@ void checkForCommands() {
   if (!packetSize)
     return;
 
+  lastPacketHeard = millis();
+
   String incoming;
   incoming.reserve(packetSize);
   while (LoRa.available())
     incoming += (char)LoRa.read();
 
-  if (incoming.indexOf(F("\"type\":\"sync\"")) >= 0) {
-    // Sync dinamis: perbarui jam tanpa mengubah mode/layar
-    applySync(incoming);
-
-  } else if (incoming.indexOf(pollCmd) >= 0) {
-    Serial.println(F(">>> Menerima Komando Panggilan Gateway <<<"));
-
-    if (currentMode == MODE_INFO) {
-      // Balas di background agar layar INFO tidak terganggu
-      replyToPoll(false);
-    } else {
-      // Dari STANDBY otomatis masuk mode deteksi
-      currentMode = MODE_DETECT;
-      replyToPoll(true);
-    }
-  }
+  processLoRaMessage(incoming);
 }
 
 // ============================================================================
@@ -285,6 +332,13 @@ void loop() {
 
   // --- Pantau komando gateway terus-menerus ---
   checkForCommands();
+
+  // --- Pemulihan mandiri bila radio hening terlalu lama ---
+  if (now - lastPacketHeard > RADIO_STALL_MS) {
+    Serial.println(F(">>> 60 dtk tanpa paket LoRa — re-init radio"));
+    reinitLoRa();
+    lastPacketHeard = millis();
+  }
 
   // --- Debouncing tombol ---
   bool reading = digitalRead(BUTTON_PIN);
